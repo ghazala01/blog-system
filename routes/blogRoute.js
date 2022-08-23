@@ -4,7 +4,8 @@ const blog = require('../model/blogSchema');
   
 router.post('/create_blog', async (req, res, next) => {
     console.log(req.body);
-    const { title, content} = req.body;
+    const { title, content } = req.body;
+    const id = req.user.id;
     try{
         const blogPost = await blog.create({title, content, authorDetail: id});
         console.log(blogPost);

@@ -1,10 +1,14 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const jwt = require("jsonwebtoken");
+
 
 //reading env file
 require('dotenv').config(); 
 const PORT = process.env.PORT;
+
+app.use(express.json());
 
 // routes
 const blogRoute = require('./routes/blogRoute');
@@ -28,14 +32,21 @@ const authMiddleWare = (req, res, next) => {
     next();
 };
 
+
+const errorMiddleware = (err, req, res, next) => {
+	res.status(err.status).json({ error: true, message: err.message });
+};
+
 app.use('/blogs', authMiddleWare, blogRoute);
 app.use('/auth', authRoute);
+app.use(errorMiddleware);
+
 
 // connection to local database
 mongoose.connect('mongodb://localhost/task').then(()=> {
     app.listen(PORT, () => {
         console.log(`Express server is running in port ${PORT}`);
     })
-}).catch(err => {
+}).catch((err) => {
     console.log(`Error connecting to DB`, err);
 });

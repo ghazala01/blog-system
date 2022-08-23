@@ -18,14 +18,12 @@ router.post('/login', async (req, res, next) => {
     if (isSamePassword) {
       // sending jwt token
       const jsonPayload = { name: user.name, id: user._id, email: user.email };
-      console.log(process.env.SECRET_KEY);
       const token = jwt.sign(jsonPayload, process.env.SECRET_KEY, { expiresIn: '3d' });
       res.json({ message: 'Login success', token });
     } else {
       next({ status: 404, message: 'User/password is wrong' })
     }
   } catch (error) {
-    console.log(error.message);
     next({ status: 500, message: error.message });
   }
 });
@@ -33,12 +31,11 @@ router.post('/login', async (req, res, next) => {
 // register
 router.post('/register', async (req, res, next) => {
   const { name, email, password } = req.body;
-  const encPassword = bcryptjs.hashSync(password, 15);
+  const encPassword = await bcryptjs.hashSync(password, 15);
   try {
     const newUser = await User.create({ name, email, password: encPassword });
     res.json({ user: newUser });
   } catch (error) {
-    console.log(error.message);
     next({ status: 500, message: error.message });
   }
 });
