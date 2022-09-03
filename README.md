@@ -1,3 +1,3 @@
 # blog-system
 
-Blog System with User Authentication and Authorization using JSONwebtoken
+Blog System to learn the concepts of User Authentication and Authorization using JSONwebtoken
